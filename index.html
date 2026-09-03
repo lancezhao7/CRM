@@ -325,6 +325,28 @@ tr:hover .ops{opacity:1}
 .cp-o .s{margin-left:auto;font-size:11.5px;color:var(--tx-4)}
 .cp-f{padding:8px 14px;border-top:1px solid var(--bd-2);font-size:11px;color:var(--tx-4);display:flex;gap:12px;background:var(--surf-2)}
 
+.auth{position:fixed;inset:0;z-index:100;background:var(--bg);display:none;place-items:center;padding:20px}
+.auth.on{display:grid}
+.auth-c{width:min(392px,100%);background:var(--surf);border:1px solid var(--bd);border-radius:16px;padding:30px 28px;box-shadow:var(--sh-3)}
+.auth-c .lg1{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.auth-c .mk{width:34px;height:34px;border-radius:9px;background:linear-gradient(145deg,var(--acc),var(--acc-2));color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700}
+.auth-c h2{font-size:17px;font-weight:650;letter-spacing:-.02em}
+.auth-c h2 span{display:block;font-size:12px;color:var(--tx-3);font-weight:400;letter-spacing:0;margin-top:1px}
+.auth-c .fd{margin-bottom:13px}
+.auth-c .b{width:100%;justify-content:center;padding:9px;margin-top:6px}
+.auth-t{text-align:center;margin-top:15px;font-size:12.5px;color:var(--tx-3)}
+.auth-t button{color:var(--acc);font-size:12.5px}
+.auth-e{background:#fdeced;color:#c8354f;border-radius:var(--r);padding:8px 11px;font-size:12.5px;margin-bottom:13px;display:none}
+.auth-e.on{display:block}
+[data-theme=dark] .auth-e{background:#3a1a20;color:#ff8095}
+.auth-o{background:var(--acc-w);color:var(--acc);border-radius:var(--r);padding:8px 11px;font-size:12.5px;margin-bottom:13px;display:none}
+.auth-o.on{display:block}
+.sy{display:flex;align-items:center;gap:7px;padding:7px 9px;font-size:11.5px;color:var(--tx-3);border-radius:var(--r)}
+.sy .d{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:none}
+.sy.busy .d{background:var(--warn);animation:pls 1s infinite}
+.sy.off .d{background:var(--err)}
+@keyframes pls{50%{opacity:.3}}
+.sy .em{margin-left:auto;font-size:11px;color:var(--tx-4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:96px}
 .ts{position:fixed;right:18px;bottom:18px;background:var(--tx);color:var(--bg);font-size:12.5px;padding:9px 15px;border-radius:9px;z-index:95;opacity:0;transform:translateY(8px);transition:all .22s cubic-bezier(.2,.9,.3,1);pointer-events:none;box-shadow:var(--sh-3);font-weight:500}
 .ts.on{opacity:1;transform:none}
 
@@ -374,6 +396,10 @@ tr:hover .ops{opacity:1}
       导入 CSV</button>
   </nav>
   <div class="sb-bt">
+    <div class="sy" id="sy"><span class="d"></span><span id="syT">已同步</span><span class="em" id="syE"></span></div>
+    <button class="nv" id="bOut">
+      <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.2 13.4H3.6a.9.9 0 0 1-.9-.9V3.5a.9.9 0 0 1 .9-.9h2.6"/><path d="M10.6 11.2 13.4 8l-2.8-3.2M13.4 8H6.4"/></svg>
+      退出登录</button>
     <button class="nv" id="bTheme">
       <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.4v1.6M8 13v1.6M14.6 8H13M3 8H1.4M12.7 3.3l-1.1 1.1M4.4 11.6l-1.1 1.1M12.7 12.7l-1.1-1.1M4.4 4.4 3.3 3.3" stroke-linecap="round"/></svg>
       <span id="themeLb">深色模式</span></button>
@@ -587,6 +613,19 @@ tr:hover .ops{opacity:1}
 <input type="file" id="fi" accept=".csv" style="display:none">
 <div class="ts" id="ts"></div>
 
+<div class="auth" id="auth">
+  <div class="auth-c">
+    <div class="lg1"><div class="mk">CD</div>
+      <h2 id="auTitle">登录客户开发 CRM<span>数据存在你自己的 Supabase 里</span></h2></div>
+    <div class="auth-e" id="auErr"></div>
+    <div class="auth-o" id="auOk"></div>
+    <div class="fd"><label>邮箱</label><input id="auE" type="email" autocomplete="username" placeholder="you@example.com"></div>
+    <div class="fd"><label>密码</label><input id="auP" type="password" autocomplete="current-password" placeholder="至少 6 位"></div>
+    <button class="b p" id="auGo">登录</button>
+    <div class="auth-t"><span id="auHint">第一次用?</span> <button id="auSw">注册账号</button></div>
+  </div>
+</div>
+
 <script>
 "use strict";
 const STAGES=["未读信息","已读不回","已报价","深入沟通","样单客户","成交客户","复购客户"];
@@ -645,14 +684,126 @@ function norm(c){
   if(!c.createdAt)c.createdAt=today();
   return c;
 }
+const SB_URL="https://iezetmqhniqeikcmzolw.supabase.co";
+const SB_KEY="sb_publishable_I1v2Gh0jfOZnGCXheuwjmg_HjdOfoKT";
+const S_SESS="crm-session";
+let sess=null, hashes={}, pend={}, flushT=null, syncing=false, online=true;
+const uk=k=>k+"-"+(sess?sess.user_id:"anon");
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},
+  del(k){try{localStorage.removeItem(k);}catch(e){}}};
+function hs(o){const t=JSON.stringify(o);let h=5381;for(let i=0;i<t.length;i++)h=((h*33)^t.charCodeAt(i))>>>0;return t.length+":"+h;}
+
 function load(){
   let raw=null;
-  try{raw=localStorage.getItem(KEY);}catch(e){}
+  try{raw=localStorage.getItem(uk(KEY));}catch(e){}
+  if(!raw){try{raw=localStorage.getItem(KEY);}catch(e){}}
   if(!raw)for(const k of OLD){try{const v=localStorage.getItem(k);if(v){raw=v;break;}}catch(e){}}
   try{cs=JSON.parse(raw||"[]");}catch(e){cs=[];}
   cs.forEach(norm);
+  hashes=LS.get(uk("crm-hash"),{});
+  pend=LS.get(uk("crm-pend"),{});
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(cs));}catch(e){alert("保存失败：存储空间不足或被禁用，请先导出备份。");}}
+function saveLocal(){LS.set(uk(KEY),cs);}
+function save(){
+  saveLocal();
+  const seen={};
+  cs.forEach(c=>{const h=hs(c);seen[c.id]=1;if(hashes[c.id]!==h)pend[c.id]="put";});
+  Object.keys(hashes).forEach(id=>{if(!seen[id])pend[id]="del";});
+  LS.set(uk("crm-pend"),pend);
+  syncBadge();
+  clearTimeout(flushT);flushT=setTimeout(flush,700);
+}
+
+/* ── Supabase REST ── */
+async function api(path,opt){
+  opt=opt||{};
+  const h=Object.assign({"apikey":SB_KEY,"Content-Type":"application/json"},opt.headers||{});
+  if(sess&&!opt.noAuth)h["Authorization"]="Bearer "+sess.access_token;
+  const r=await fetch(SB_URL+path,{method:opt.method||"GET",headers:h,body:opt.body?JSON.stringify(opt.body):undefined});
+  if(r.status===401&&sess&&!opt.retry){
+    if(await refresh())return api(path,Object.assign({},opt,{retry:1}));
+    logout();throw new Error("登录已过期，请重新登录");
+  }
+  if(!r.ok){let m="";try{const j=await r.json();m=j.msg||j.message||j.error_description||j.error||"";}catch(e){}
+    throw new Error(m||("请求失败 "+r.status));}
+  const t=await r.text();return t?JSON.parse(t):null;
+}
+async function refresh(){
+  if(!sess||!sess.refresh_token)return false;
+  try{
+    const d=await api("/auth/v1/token?grant_type=refresh_token",
+      {method:"POST",noAuth:1,body:{refresh_token:sess.refresh_token}});
+    setSess(d);return true;
+  }catch(e){return false;}
+}
+function setSess(d){
+  sess={access_token:d.access_token,refresh_token:d.refresh_token,
+    user_id:(d.user&&d.user.id)||sess&&sess.user_id,email:(d.user&&d.user.email)||sess&&sess.email};
+  LS.set(S_SESS,sess);
+}
+function logout(){
+  sess=null;LS.del(S_SESS);cs=[];hashes={};pend={};
+  $("#auth").classList.add("on");
+  $("#auE").value="";$("#auP").value="";
+}
+
+/* ── 同步 ── */
+function syncBadge(){
+  const n=Object.keys(pend).length,el=$("#sy");
+  el.className="sy"+(syncing?" busy":(!online?" off":""));
+  $("#syT").textContent=syncing?"同步中…":(!online?`离线 · ${n} 条待传`:(n?`${n} 条待传`:"已同步"));
+  $("#syE").textContent=sess?sess.email||"":"";
+}
+async function flush(){
+  if(!sess||syncing)return;
+  const ids=Object.keys(pend);if(!ids.length){syncBadge();return;}
+  syncing=true;syncBadge();
+  try{
+    const puts=ids.filter(i=>pend[i]==="put").map(i=>cs.find(c=>c.id===i)).filter(Boolean);
+    const dels=ids.filter(i=>pend[i]==="del");
+    if(puts.length){
+      for(let i=0;i<puts.length;i+=200){
+        const b=puts.slice(i,i+200).map(c=>({id:c.id,data:c,updated_at:new Date().toISOString()}));
+        await api("/rest/v1/contacts?on_conflict=id",
+          {method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:b});
+      }
+      puts.forEach(c=>{hashes[c.id]=hs(c);delete pend[c.id];});
+    }
+    if(dels.length){
+      for(let i=0;i<dels.length;i+=200){
+        const g=dels.slice(i,i+200);
+        await api("/rest/v1/contacts?id=in.("+g.map(x=>'"'+x+'"').join(",")+")",
+          {method:"DELETE",headers:{Prefer:"return=minimal"}});
+        g.forEach(id=>{delete hashes[id];delete pend[id];});
+      }
+    }
+    online=true;
+    LS.set(uk("crm-hash"),hashes);LS.set(uk("crm-pend"),pend);
+  }catch(e){
+    online=false;
+    if(/登录已过期/.test(e.message))ts(e.message);
+  }
+  syncing=false;syncBadge();
+}
+async function pull(){
+  syncing=true;syncBadge();
+  try{
+    const rows=await api("/rest/v1/contacts?select=id,data&order=updated_at.desc");
+    online=true;
+    const keep=Object.keys(pend);
+    const cloud=rows.map(r=>norm(Object.assign({},r.data,{id:r.id})));
+    if(keep.length){
+      const local=cs.filter(c=>pend[c.id]==="put");
+      const m={};cloud.forEach(c=>m[c.id]=c);local.forEach(c=>m[c.id]=c);
+      keep.filter(i=>pend[i]==="del").forEach(i=>delete m[i]);
+      cs=Object.values(m);
+    }else cs=cloud;
+    hashes={};cs.forEach(c=>{if(pend[c.id]!=="put")hashes[c.id]=hs(c);});
+    LS.set(uk("crm-hash"),hashes);saveLocal();
+  }catch(e){online=false;}
+  syncing=false;syncBadge();
+}
 
 /* ══ 组合框 ══ */
 function Combo(host,opt){
@@ -1192,10 +1343,85 @@ try{if(localStorage.getItem("crm-theme")==="dark"){
 cbC=Combo("#cbCountry",{groups:CONTINENTS,ph:"搜索或直接输入国家"});
 cbS=Combo("#cbSource",{options:SOURCES,ph:"选择或输入来源"});
 cbP=Combo("#cbProduct",{options:PRODUCTS,ph:"选择或输入产品"});
+/* ── 登录界面 ── */
+let auMode="in";
+const auErr=m=>{const e=$("#auErr");e.textContent=m;e.classList.toggle("on",!!m);};
+const auOk=m=>{const e=$("#auOk");e.textContent=m;e.classList.toggle("on",!!m);};
+$("#auSw").onclick=()=>{
+  auMode=auMode==="in"?"up":"in";auErr("");auOk("");
+  $("#auTitle").innerHTML=(auMode==="in"?"登录客户开发 CRM":"注册新账号")+"<span>数据存在你自己的 Supabase 里</span>";
+  $("#auGo").textContent=auMode==="in"?"登录":"注册并登录";
+  $("#auHint").textContent=auMode==="in"?"第一次用?":"已经有账号?";
+  $("#auSw").textContent=auMode==="in"?"注册账号":"去登录";
+};
+$("#auGo").onclick=async()=>{
+  const em=$("#auE").value.trim(),pw=$("#auP").value;
+  if(!em||!pw)return auErr("邮箱和密码都要填");
+  if(pw.length<6)return auErr("密码至少 6 位");
+  auErr("");auOk("");$("#auGo").textContent="处理中…";$("#auGo").disabled=true;
+  try{
+    if(auMode==="up"){
+      const d=await api("/auth/v1/signup",{method:"POST",noAuth:1,body:{email:em,password:pw}});
+      if(!d.access_token){auOk("注册成功，请去邮箱确认后再登录。");$("#auSw").click();}
+      else{setSess(d);await boot();}
+    }else{
+      const d=await api("/auth/v1/token?grant_type=password",{method:"POST",noAuth:1,body:{email:em,password:pw}});
+      setSess(d);await boot();
+    }
+  }catch(e){
+    let m=e.message||"登录失败";
+    if(/Invalid login/i.test(m))m="邮箱或密码不对";
+    if(/already registered/i.test(m))m="这个邮箱已经注册过了，直接登录";
+    if(/Failed to fetch/i.test(m))m="连不上服务器，检查网络或代理";
+    auErr(m);
+  }
+  $("#auGo").disabled=false;
+  $("#auGo").textContent=auMode==="in"?"登录":"注册并登录";
+};
+$("#auP").addEventListener("keydown",e=>{if(e.key==="Enter")$("#auGo").click();});
+$("#auE").addEventListener("keydown",e=>{if(e.key==="Enter")$("#auP").focus();});
+$("#bOut").onclick=()=>{
+  if(Object.keys(pend).length&&!confirm("还有 "+Object.keys(pend).length+" 条没同步到云端，确定退出？"))return;
+  logout();
+};
+
+/* ── 本地数据迁移 ── */
+async function migrate(){
+  let old=null;
+  for(const k of [KEY].concat(OLD)){try{const v=localStorage.getItem(k);if(v){old=JSON.parse(v);break;}}catch(e){}}
+  if(!old||!old.length||cs.length)return;
+  if(!confirm(`检测到本机有 ${old.length} 个客户还没上云，现在上传到你的账号？`))return;
+  cs=old.map(norm);hashes={};
+  cs.forEach(c=>pend[c.id]="put");
+  saveLocal();LS.set(uk("crm-pend"),pend);
+  await flush();
+  ts(Object.keys(pend).length?"部分上传失败，稍后自动重试":"已上传 "+cs.length+" 个客户");
+  draw();
+}
+
+async function boot(){
+  $("#auth").classList.remove("on");
+  load();
+  if(!location.hash)location.hash="#/home";
+  route();
+  await pull();
+  await migrate();
+  route();
+  if(Object.keys(pend).length)flush();
+}
+
 window.addEventListener("hashchange",route);
-load();
-if(!location.hash)location.hash="#/home";
-route();
+window.addEventListener("online",()=>{online=true;flush();});
+window.addEventListener("offline",()=>{online=false;syncBadge();});
+setInterval(()=>{if(sess&&Object.keys(pend).length)flush();},20000);
+
+sess=LS.get(S_SESS,null);
+if(sess&&sess.access_token){
+  refresh().then(ok=>{if(ok)boot();else{logout();}});
+}else{
+  $("#auth").classList.add("on");
+  load();route();
+}
 </script>
 </body>
 </html>
