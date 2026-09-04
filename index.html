@@ -229,6 +229,37 @@ tr:hover .ops{opacity:1}
 .lc .x{color:var(--tx-4);font-size:10px;padding-left:2px}
 .lc .x:hover{color:var(--err)}
 
+.qz{padding:11px 15px;border-bottom:1px solid var(--bd-2)}
+.qz:last-child{border-bottom:none}
+.qz:hover{background:var(--surf-2)}
+.qz .q1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.qz .qd{font-size:12px;color:var(--tx-3)}
+.qz .qp{font-weight:650;font-size:14px;letter-spacing:-.02em}
+.qz .qt{font-size:11px;color:var(--tx-2);background:var(--surf-3);padding:0 6px;border-radius:4px;line-height:18px}
+.qz .qo{margin-left:auto;display:flex;gap:3px;opacity:0;transition:opacity .12s}
+.qz:hover .qo{opacity:1}
+.qz .q2{margin-top:7px;font-size:12px}
+.qz .qi{display:flex;gap:10px;padding:2.5px 0;color:var(--tx-2);border-bottom:1px dashed var(--bd-2)}
+.qz .qi:last-child{border-bottom:none}
+.qz .qi .sp{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qz .qi .qy{color:var(--tx-3);flex:none}
+.qz .qi .pr{font-variant-numeric:tabular-nums;flex:none;font-weight:520;min-width:76px;text-align:right}
+.qz .qf{margin-top:7px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pdf{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--bd);border-radius:6px;padding:3px 9px;font-size:11.5px;color:var(--tx-2);background:var(--surf)}
+.pdf:hover{border-color:var(--acc);color:var(--acc);text-decoration:none}
+.pdf .ig{color:var(--err);font-weight:700;font-size:10px}
+.qz .qn{margin-top:6px;font-size:12px;color:var(--tx-3)}
+.irow{display:grid;grid-template-columns:1fr 74px 74px 92px 26px;gap:7px;margin-bottom:7px;align-items:center}
+.irow input{border:1px solid var(--bd);border-radius:6px;padding:6px 8px;font-size:12.5px;background:var(--surf-2);width:100%}
+.irow input:focus{outline:none;background:var(--surf);border-color:var(--acc)}
+.irow .rm{color:var(--tx-4);font-size:13px;text-align:center}
+.irow .rm:hover{color:var(--err)}
+.ihd{display:grid;grid-template-columns:1fr 74px 74px 92px 26px;gap:7px;margin-bottom:5px;font-size:11px;color:var(--tx-4)}
+@media(max-width:620px){.irow,.ihd{grid-template-columns:1fr 1fr;gap:5px}.ihd{display:none}}
+.fbox{border:1px dashed var(--bd);border-radius:var(--r);padding:12px;text-align:center;font-size:12.5px;color:var(--tx-3);cursor:pointer}
+.fbox:hover{border-color:var(--acc);color:var(--acc);background:var(--acc-w)}
+.fbox.has{border-style:solid;text-align:left;display:flex;align-items:center;gap:8px;color:var(--tx-2)}
+.qsum{margin-left:auto;font-size:12px;color:var(--tx-2)}
 .lg{padding:13px 15px;border-bottom:1px solid var(--bd-2)}
 .lg textarea{border:1px solid var(--bd);border-radius:var(--r);padding:9px 11px;min-height:74px;resize:vertical;font-size:13px;width:100%;background:var(--surf-2);transition:background .15s,border-color .15s}
 .lg textarea:focus{outline:none;background:var(--surf);border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-w)}
@@ -480,6 +511,9 @@ tr:hover .ops{opacity:1}
       <div class="cd"><div class="cd-h"><h2>客户信息</h2>
         <div class="rt"><button class="b sm gh" id="bEdit">编辑</button></div></div>
         <div class="kv" id="dInfo"></div></div>
+      <div class="cd"><div class="cd-h"><h2>报价记录</h2><span class="hint" id="qH"></span>
+        <div class="rt"><button class="b sm" id="bAddQ">＋ 新报价</button></div></div>
+        <div id="dQuo"></div></div>
       <div class="cd"><div class="cd-h"><h2>联系人</h2><span class="hint" id="pH"></span>
         <div class="rt"><button class="b sm" id="bAddP">＋ 添加</button></div></div>
         <div id="dPpl"></div></div>
@@ -600,6 +634,34 @@ tr:hover .ops{opacity:1}
   <div class="md-f"><button class="b" data-close="1">取消</button><button class="b p" id="pSv">保存</button></div>
 </div>
 
+<!-- 报价弹窗 -->
+<div class="md" id="mQuo">
+  <div class="md-h"><h3 id="mQuoT">新增报价</h3><button class="x" data-close="1">✕</button></div>
+  <div class="md-b">
+    <div class="fs"><div class="fs-t">报价信息</div>
+      <div class="gr">
+        <div class="fd"><label>报价日期</label><input type="date" id="qDate"></div>
+        <div class="fd"><label>产品</label><input id="qProd" placeholder="UV板 / 木饰面 / 格栅"></div>
+        <div class="fd"><label>币种</label><select id="qCur"><option>USD</option><option>EUR</option><option>RUB</option><option>CNY</option><option>AED</option></select></div>
+        <div class="fd"><label>贸易条款</label><select id="qTerm"><option>FOB</option><option>CIF</option><option>EXW</option><option>CFR</option><option>DDP</option><option>DAP</option></select></div>
+        <div class="fd"><label>装运港 / 目的港</label><input id="qPort" placeholder="Qingdao / Almaty"></div>
+        <div class="fd"><label>报价有效期至</label><input type="date" id="qValid"></div>
+      </div></div>
+    <div class="fs"><div class="fs-t">规格与价格</div>
+      <div class="ihd"><span>规格</span><span>数量</span><span>单位</span><span>单价</span><span></span></div>
+      <div id="qItems"></div>
+      <button class="b sm" id="qAddI" style="margin-top:4px">＋ 加一行</button>
+      <span class="qsum" id="qSum"></span>
+    </div>
+    <div class="fs"><div class="fs-t">报价单文件</div>
+      <div class="fbox" id="qFbox">点击上传报价单 PDF（也支持图片、Excel，单个不超过 10MB）</div>
+      <input type="file" id="qFile" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.xls,.doc,.docx" style="display:none"></div>
+    <div class="fs"><div class="fs-t">备注</div>
+      <div class="fd"><textarea id="qNote" placeholder="对方还价多少、比谁家贵、包装要求、付款方式…"></textarea></div></div>
+  </div>
+  <div class="md-f"><button class="b" data-close="1">取消</button><button class="b p" id="qSv">保存报价</button></div>
+</div>
+
 <!-- 链接弹窗 -->
 <div class="md nw" id="mLink">
   <div class="md-h"><h3>添加链接</h3><button class="x" data-close="1">✕</button></div>
@@ -675,6 +737,7 @@ function norm(c){
       facebook:c.facebook||"",instagram:c.instagram||"",linkedin:c.linkedin||"",social:"",note:""}]:[];
   }
   if(!Array.isArray(c.links))c.links=[];
+  if(!Array.isArray(c.quotes))c.quotes=[];
   if(!Array.isArray(c.logs))c.logs=[];
   if(c.stage==="询盘客户")c.stage="已报价";
   c.logs.forEach(l=>{if(l.stage==="询盘客户")l.stage="已报价";});
@@ -994,6 +1057,7 @@ function dDetail(){
         <h2>${esc(c.company||p.name||"未命名客户")}</h2>
         <div class="mt2">${gdc(c.grade)}<span>${esc(c.country||"未填国家")}</span><span>·</span>
           <span>${esc(c.product||"未填产品")}</span><span>·</span><span>来自${esc(c.source||"未填")}</span><span>·</span>
+          ${c.quotes.length?`<span>·</span><span>最近报价 <span class="num">${esc(c.quotes.slice().sort((a,b)=>(b.date||"").localeCompare(a.date||""))[0].date||"")}</span></span>`:""}
           <span>录入 <span class="num">${esc(c.createdAt)}</span></span>
           ${c.nextFollowUp?`<span>·</span><span>下次跟进 <span class="num ${c.nextFollowUp<t?"od":""}">${esc(c.nextFollowUp)}</span></span>`:""}</div>
       </div>
@@ -1012,6 +1076,29 @@ function dDetail(){
     +r("标签",(c.tags||"").split(";").filter(Boolean).map(x=>`<span class="tg">${esc(x)}</span>`).join(""))
     +r("最近联系",c.lastTouch?`<span class="num">${esc(c.lastTouch)}</span>`:"")
     +r("备注",esc(c.notes).replace(/\n/g,"<br>"));
+
+  const CUR={USD:"$",EUR:"€",RUB:"₽",CNY:"¥",AED:"AED "};
+  $("#qH").textContent=c.quotes.length?c.quotes.length+" 次报价":"";
+  const qs=c.quotes.slice().sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  $("#dQuo").innerHTML=qs.length?qs.map(q=>{
+    const sym=CUR[q.currency]||(q.currency+" ");
+    const tot=(q.items||[]).reduce((a,i)=>a+((+i.qty||0)*(+i.price||0)),0);
+    const exp=q.valid&&q.valid<today();
+    return `<div class="qz"><div class="q1">
+      <span class="qd num">${esc(q.date||"")}</span>
+      ${q.product?`<span class="qt">${esc(q.product)}</span>`:""}
+      <span class="qt">${esc(q.terms||"")}${q.port?" "+esc(q.port):""}</span>
+      ${tot?`<span class="qp">${sym}${tot.toLocaleString(undefined,{maximumFractionDigits:2})}</span>`:""}
+      ${q.valid?`<span class="qd ${exp?"od":""}">${exp?"已过期":"有效至"} ${esc(q.valid)}</span>`:""}
+      <span class="qo"><button class="lk" data-edq="${esc(q.id)}">编辑</button>
+        <button class="lk m" data-dlq="${esc(q.id)}">删除</button></span></div>
+      ${(q.items||[]).length?`<div class="q2">${q.items.map(i=>`<div class="qi">
+        <span class="sp">${esc(i.spec||"—")}</span>
+        <span class="qy num">${i.qty?esc(i.qty)+" "+esc(i.unit||""):esc(i.unit||"")}</span>
+        <span class="pr">${i.price?sym+esc(i.price):"—"}</span></div>`).join("")}</div>`:""}
+      ${q.file?`<div class="qf"><a class="pdf" data-qf="${esc(q.id)}"><span class="ig">PDF</span>${esc(q.file.name)}</a></div>`:""}
+      ${q.note?`<div class="qn">${esc(q.note)}</div>`:""}</div>`;
+  }).join(""):`<div class="ey" style="padding:26px"><div class="bg">还没有报价记录</div><div class="sm">报过的规格和价格记在这，下次跟进不用翻聊天框。</div></div>`;
 
   $("#pH").textContent=c.people.length?c.people.length+" 人":"";
   $("#dPpl").innerHTML=c.people.length?c.people.map((p,i)=>{
@@ -1136,6 +1223,109 @@ function saveP(){
   c.lastTouch=today();save();closeAll();dDetail();ts(editP==null?"已添加联系人":"已保存");
 }
 
+/* ══ 报价 ══ */
+let editQ=null,qFileNew=null,qFileCur=null;
+function qRows(items){
+  $("#qItems").innerHTML=(items.length?items:[{}]).map((i,n)=>`<div class="irow" data-n="${n}">
+    <input data-q="spec" value="${esc(i.spec||"")}" placeholder="1220*2440*3mm 亮光白">
+    <input data-q="qty" class="num" value="${esc(i.qty||"")}" placeholder="500">
+    <input data-q="unit" value="${esc(i.unit||"")}" placeholder="张 / m²">
+    <input data-q="price" class="num" value="${esc(i.price||"")}" placeholder="8.50">
+    <button class="rm" data-rmi="${n}">✕</button></div>`).join("");
+  qCalc();
+}
+function qRead(){
+  return [...$("#qItems").querySelectorAll(".irow")].map(r=>{
+    const o={};r.querySelectorAll("[data-q]").forEach(i=>o[i.dataset.q]=i.value.trim());return o;
+  }).filter(o=>o.spec||o.price||o.qty);
+}
+function qCalc(){
+  const t=qRead().reduce((a,i)=>a+((+i.qty||0)*(+i.price||0)),0);
+  $("#qSum").textContent=t?`合计 ${$("#qCur").value} ${t.toLocaleString(undefined,{maximumFractionDigits:2})}`:"";
+}
+function fbox(){
+  const f=qFileNew||qFileCur;
+  $("#qFbox").className="fbox"+(f?" has":"");
+  $("#qFbox").innerHTML=f?`<span class="ig" style="color:var(--err);font-weight:700;font-size:10px">FILE</span>
+    <span>${esc(f.name)}</span><span style="color:var(--tx-4);font-size:11px">${f.size?(f.size/1024).toFixed(0)+" KB":""}</span>
+    <button class="lk m" id="qFdel" style="margin-left:auto">移除</button>`
+    :"点击上传报价单 PDF（也支持图片、Excel，单个不超过 10MB）";
+}
+function mQuo(id){
+  const c=find(curId);if(!c)return;
+  editQ=id||null;qFileNew=null;
+  const q=id?c.quotes.find(x=>x.id===id):null;
+  qFileCur=q&&q.file||null;
+  $("#mQuoT").textContent=q?"编辑报价":"新增报价";
+  $("#qDate").value=(q&&q.date)||today();
+  $("#qProd").value=(q&&q.product)||c.product||"";
+  $("#qCur").value=(q&&q.currency)||"USD";
+  $("#qTerm").value=(q&&q.terms)||"FOB";
+  $("#qPort").value=(q&&q.port)||"";
+  $("#qValid").value=(q&&q.valid)||"";
+  $("#qNote").value=(q&&q.note)||"";
+  qRows((q&&q.items)||[]);fbox();
+  openM("#mQuo");setTimeout(()=>$("#qProd").focus(),50);
+}
+async function upFile(f,cid){
+  const nm=f.name.replace(/[^\w.\-]/g,"_");
+  const path=`${sess.user_id}/${cid}/${Date.now()}_${nm}`;
+  const r=await fetch(SB_URL+"/storage/v1/object/quotes/"+encodeURI(path),{
+    method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+sess.access_token,
+      "Content-Type":f.type||"application/octet-stream","x-upsert":"true"},body:f});
+  if(!r.ok){const t=await r.text();
+    throw new Error(/not found|Bucket/i.test(t)?"存储桶还没建好，先去 Supabase 跑一次建桶 SQL":"上传失败："+t.slice(0,100));}
+  return{path,name:f.name,size:f.size,type:f.type};
+}
+async function openQF(qid){
+  const c=find(curId),q=c&&c.quotes.find(x=>x.id===qid);
+  if(!q||!q.file)return;
+  try{
+    const d=await api("/storage/v1/object/sign/quotes/"+encodeURI(q.file.path),{method:"POST",body:{expiresIn:3600}});
+    window.open(SB_URL+"/storage/v1"+d.signedURL,"_blank","noopener");
+  }catch(e){ts("打不开文件："+e.message);}
+}
+async function saveQ(){
+  const c=find(curId);if(!c)return;
+  const items=qRead();
+  if(!items.length&&!qFileNew&&!qFileCur){ts("至少填一行规格价格，或者传一份报价单");return;}
+  const btn=$("#qSv");btn.disabled=true;btn.textContent="保存中…";
+  let file=qFileCur;
+  try{if(qFileNew)file=await upFile(qFileNew,c.id);}
+  catch(e){ts(e.message);btn.disabled=false;btn.textContent="保存报价";return;}
+  const o={date:$("#qDate").value||today(),product:$("#qProd").value.trim(),
+    currency:$("#qCur").value,terms:$("#qTerm").value,port:$("#qPort").value.trim(),
+    valid:$("#qValid").value,note:$("#qNote").value.trim(),items,file};
+  let moved=false;
+  if(editQ){Object.assign(c.quotes.find(x=>x.id===editQ),o);}
+  else{
+    c.quotes.unshift(Object.assign({id:nid()},o));
+    if(si(c.stage)<2){c.stage="已报价";moved=true;}
+    const sm=items.length?items.map(i=>`${i.spec||""} ${i.price?$("#qCur").value+i.price:""}`.trim()).join("；"):(file?file.name:"");
+    c.logs.unshift({t:new Date().toISOString().slice(0,16).replace("T"," "),
+      text:"报价："+(sm||"见附件"),stage:moved?"已报价":""});
+  }
+  c.lastTouch=today();
+  btn.disabled=false;btn.textContent="保存报价";
+  save();closeAll();dDetail();
+  ts(moved?"报价已记录，阶段自动改为「已报价」":"报价已保存");
+}
+$("#bAddQ").onclick=()=>mQuo(null);
+$("#qAddI").onclick=()=>{qRows(qRead().concat([{}]));};
+$("#qCur").onchange=qCalc;
+$("#qItems").addEventListener("input",qCalc);
+$("#qItems").addEventListener("click",e=>{
+  const b=e.target.closest("[data-rmi]");if(!b)return;
+  const it=qRead();it.splice(+b.dataset.rmi,1);qRows(it);
+});
+$("#qFbox").onclick=e=>{if(e.target.id==="qFdel"){qFileNew=null;qFileCur=null;fbox();return;}$("#qFile").click();};
+$("#qFile").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  if(f.size>10*1024*1024){ts("文件超过 10MB，压缩一下再传");e.target.value="";return;}
+  qFileNew=f;fbox();e.target.value="";
+};
+$("#qSv").onclick=saveQ;
+
 /* ══ 命令面板 ══ */
 let cpItems=[],cpHi=0;
 function cpOpen(){
@@ -1214,6 +1404,14 @@ document.addEventListener("click",e=>{
     if(confirm("删除联系人「"+(p.name||"未填姓名")+"」？")){c.people.splice(+dp.dataset.dlp,1);save();dDetail();ts("已删除");}return;}
   const mn=e.target.closest("[data-main]");
   if(mn){const c=find(curId),i=+mn.dataset.main;c.people.unshift(c.people.splice(i,1)[0]);save();dDetail();ts("已设为主要联系人");return;}
+  const eq=e.target.closest("[data-edq]");if(eq)return mQuo(eq.dataset.edq);
+  const dq=e.target.closest("[data-dlq]");
+  if(dq){const c=find(curId),q=c.quotes.find(x=>x.id===dq.dataset.dlq);
+    if(confirm("删除这条报价记录？"+(q&&q.file?"\n附件也会一起删除。":""))){
+      if(q&&q.file)api("/storage/v1/object/quotes/"+encodeURI(q.file.path),{method:"DELETE"}).catch(()=>{});
+      c.quotes=c.quotes.filter(x=>x.id!==dq.dataset.dlq);save();dDetail();ts("已删除");}
+    return;}
+  const qf=e.target.closest("[data-qf]");if(qf){openQF(qf.dataset.qf);return;}
   const dl=e.target.closest("[data-dll]");
   if(dl){const c=find(curId);c.links.splice(+dl.dataset.dll,1);save();dDetail();return;}
   const dg=e.target.closest("[data-dlg]");
@@ -1277,12 +1475,13 @@ document.addEventListener("keydown",e=>{
 /* ══ 导入导出 ══ */
 function expCSV(){
   const head=["公司名称","国家地区","客户来源","客户分类","客户阶段","询价产品","公司网址","标签","备注",
-    "创建日期","最近联系","下次跟进","联系人","链接","跟进记录"];
+    "创建日期","最近联系","下次跟进","联系人","链接","跟进记录","报价"];
   const rows=cs.map(c=>[c.company,c.country,c.source,c.grade,c.stage,c.product,c.website,c.tags,c.notes,
     c.createdAt,c.lastTouch,c.nextFollowUp,
     c.people.map(p=>[p.name,p.title,p.wa,p.email,p.phone,p.wechat,p.facebook,p.instagram,p.linkedin,p.social,p.note].join("|")).join(" ;; "),
     c.links.map(l=>l.label+"|"+l.url).join(" ;; "),
-    c.logs.map(l=>[l.t,l.stage||"",(l.text||"").replace(/\n/g," ")].join("|")).join(" ;; ")]);
+    c.logs.map(l=>[l.t,l.stage||"",(l.text||"").replace(/\n/g," ")].join("|")).join(" ;; "),
+    c.quotes.length?JSON.stringify(c.quotes):""]);
   const csv="\uFEFF"+[head,...rows].map(r=>r.map(v=>'"'+(v==null?"":String(v)).replace(/"/g,'""')+'"').join(",")).join("\n");
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
@@ -1327,6 +1526,8 @@ function impCSV(){
         if(lc)lc.split(" ;; ").forEach(s=>{const a=s.split("|");if(a[0]&&a[1])c.links.push({label:a[0],url:a[1]});});
         const gc=G("跟进记录");
         if(gc)gc.split(" ;; ").forEach(s=>{const a=s.split("|");if(a[2])c.logs.push({t:a[0]||"",stage:a[1]||"",text:a[2]});});
+        const qq=G("报价");
+        if(qq){try{const arr=JSON.parse(qq);if(Array.isArray(arr))c.quotes=arr;}catch(e){}}
         cs.push(c);add++;
       }
       save();draw();ts(`已导入 ${add} 个客户`+(mrg?`，${mrg} 个联系人并入已有公司`:""));fi.value="";
