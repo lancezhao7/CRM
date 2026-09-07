@@ -424,7 +424,10 @@ tr:hover .ops{opacity:1}
       导出备份</button>
     <button class="nv" id="bImp">
       <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.4V2.8"/><path d="M5.2 5.6 8 2.8l2.8 2.8"/><path d="M2.8 11.4v1.2a.8.8 0 0 0 .8.8h8.8a.8.8 0 0 0 .8-.8v-1.2"/></svg>
-      导入 CSV</button>
+      导入 Excel / CSV</button>
+    <button class="nv" id="bTmpl">
+      <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2.4" width="10" height="11.2" rx="1.2"/><path d="M5.6 6h4.8M5.6 8.6h4.8M5.6 11.2h2.8"/></svg>
+      下载导入模板</button>
   </nav>
   <div class="sb-bt">
     <div class="sy" id="sy"><span class="d"></span><span id="syT">已同步</span><span class="em" id="syE"></span></div>
@@ -672,7 +675,7 @@ tr:hover .ops{opacity:1}
   <div class="md-f"><button class="b" data-close="1">取消</button><button class="b p" id="lSv">保存</button></div>
 </div>
 
-<input type="file" id="fi" accept=".csv" style="display:none">
+<input type="file" id="fi" accept=".csv,.xlsx,.xls,.txt" style="display:none">
 <div class="ts" id="ts"></div>
 
 <div class="auth" id="auth">
@@ -1488,54 +1491,168 @@ function expCSV(){
   a.download="CRM备份_"+today()+".csv";a.click();URL.revokeObjectURL(a.href);
   ts("已导出 "+rows.length+" 个客户");
 }
+function loadXLSX(){
+  return new Promise((ok,no)=>{
+    if(window.XLSX)return ok(window.XLSX);
+    const el=document.createElement("script");
+    el.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+    el.onload=()=>window.XLSX?ok(window.XLSX):no(new Error("Excel 组件没加载起来"));
+    el.onerror=()=>no(new Error("Excel 组件加载失败，检查网络后重试；或把文件另存为 CSV 再导入"));
+    document.head.appendChild(el);
+  });
+}
+function decodeBuf(buf){
+  let t=new TextDecoder("utf-8").decode(buf);
+  if(t.indexOf("\uFFFD")>=0){
+    for(const enc of ["gb18030","big5"]){
+      try{const t2=new TextDecoder(enc).decode(buf);
+        if(t2.indexOf("\uFFFD")<0){t=t2;break;}}catch(e){}
+    }
+  }
+  return t.replace(/^\uFEFF/,"");
+}
+function parseCSV(t){
+  const rows=[];let row=[],cur="",q=false;
+  for(let i=0;i<t.length;i++){
+    const ch=t[i];
+    if(q){if(ch==='"'){if(t[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=ch;}
+    else if(ch==='"')q=true;
+    else if(ch===","){row.push(cur);cur="";}
+    else if(ch==="\n"){row.push(cur);cur="";rows.push(row);row=[];}
+    else if(ch!=="\r")cur+=ch;
+  }
+  if(cur!==""||row.length){row.push(cur);rows.push(row);}
+  return rows.filter(r=>r.some(c=>String(c==null?"":c).trim()));
+}
+const nk=x=>String(x==null?"":x).replace(/^\uFEFF/,"").replace(/[\s\u3000*]/g,"")
+  .replace(/[（(].*?[)）]/g,"").toLowerCase();
+const ALIAS={
+  company:["公司名称","公司","客户名称","客户","companyname","company"],
+  person:["联系人昵称","联系人","姓名","contactname","contact","name"],
+  email:["联系人邮箱","邮箱","电子邮箱","email","e-mail","mail"],
+  country:["国家地区","国家","地区","country"],
+  wa:["whatsapp","电话","手机","手机号","联系电话","phone","tel","mobile"],
+  source:["客户来源","来源","source"],
+  grade:["客户分类","分级","等级","客户等级","grade","level"],
+  product:["询价产品","产品","主营产品","product"],
+  website:["公司网址","网址","官网","website","web","url"],
+  tags:["标签","tag","tags"],
+  stage:["客户阶段","阶段","stage","status"],
+  note:["备注","note","notes","remark","remarks"],
+  fb:["facebook"],ig:["instagram"],li:["linkedin"],
+  created:["创建日期","录入日期","createdat"],
+  touch:["最近联系","最近跟进","lasttouch"],
+  next:["下次跟进","跟进日期","nextfollowup"],
+  people:["联系人明细","people"],links:["链接","links"],
+  logs:["跟进记录","logs"],quotes:["报价","报价记录","quotes"]
+};
+function mapHead(hd){
+  const m={},used={};
+  hd.forEach((h,i)=>{
+    const n=nk(h);if(!n)return;
+    for(const key of Object.keys(ALIAS)){
+      if(used[key])continue;
+      if(ALIAS[key].some(a=>n===nk(a))){m[key]=i;used[key]=1;return;}
+    }
+  });
+  // 第二轮：包含匹配，容忍"公司名称 *"这类
+  hd.forEach((h,i)=>{
+    const n=nk(h);if(!n)return;
+    for(const key of Object.keys(ALIAS)){
+      if(used[key]||m[key]!=null)continue;
+      if(ALIAS[key].some(a=>n.indexOf(nk(a))>=0)){m[key]=i;used[key]=1;return;}
+    }
+  });
+  return m;
+}
+function rowsToContacts(rows){
+  if(rows.length<2)return{add:0,mrg:0,skip:0,heads:[],msg:"文件里只有表头或者是空的"};
+  const hd=rows[0].map(x=>String(x==null?"":x));
+  const m=mapHead(hd);
+  if(m.company==null&&m.person==null)
+    return{add:0,mrg:0,skip:0,heads:hd,msg:"没找到「公司名称」或「联系人」这一列"};
+  const V=(r,k)=>m[k]==null?"":String(r[m[k]]==null?"":r[m[k]]).trim();
+  let add=0,mrg=0,skip=0;
+  for(let i=1;i<rows.length;i++){
+    const r=rows[i];
+    const co=V(r,"company"),pn=V(r,"person");
+    if(!co&&!pn){skip++;continue;}
+    const per={id:nid(),name:pn,title:"",email:V(r,"email"),wa:V(r,"wa"),phone:"",wechat:"",
+      facebook:V(r,"fb"),instagram:V(r,"ig"),linkedin:V(r,"li"),social:"",note:""};
+    const ex=co?cs.find(c=>c.company&&c.company===co):null;
+    if(ex){if(per.name||per.wa||per.email){ex.people.push(per);mrg++;}else skip++;continue;}
+    let st=V(r,"stage");if(st==="询盘客户")st="已报价";
+    const c=norm({id:nid()+"x"+i,company:co,country:V(r,"country"),
+      source:V(r,"source")||"其它",grade:V(r,"grade"),
+      stage:STAGES.indexOf(st)>=0?st:"未读信息",product:V(r,"product")||"UV板",
+      website:V(r,"website"),tags:V(r,"tags"),notes:V(r,"note"),
+      createdAt:V(r,"created")||today(),lastTouch:V(r,"touch")||today(),
+      nextFollowUp:V(r,"next"),people:[],links:[],logs:[],quotes:[]});
+    if(per.name||per.wa||per.email)c.people.push(per);
+    const pc=V(r,"people");
+    if(pc)pc.split(" ;; ").forEach(x=>{const a=x.split("|");if(!a.join(""))return;
+      c.people.push({id:nid(),name:a[0]||"",title:a[1]||"",wa:a[2]||"",email:a[3]||"",phone:a[4]||"",
+        wechat:a[5]||"",facebook:a[6]||"",instagram:a[7]||"",linkedin:a[8]||"",social:a[9]||"",note:a[10]||""});});
+    const lc=V(r,"links");
+    if(lc)lc.split(" ;; ").forEach(x=>{const a=x.split("|");if(a[0]&&a[1])c.links.push({label:a[0],url:a[1]});});
+    const gc=V(r,"logs");
+    if(gc)gc.split(" ;; ").forEach(x=>{const a=x.split("|");if(a[2])c.logs.push({t:a[0]||"",stage:a[1]||"",text:a[2]});});
+    const qc=V(r,"quotes");
+    if(qc){try{const arr=JSON.parse(qc);if(Array.isArray(arr))c.quotes=arr;}catch(e){}}
+    cs.push(c);add++;
+  }
+  return{add,mrg,skip,heads:hd,msg:""};
+}
 function impCSV(){
   const fi=$("#fi");
-  fi.onchange=()=>{
+  fi.onchange=async()=>{
     const f=fi.files[0];if(!f)return;
-    const rd=new FileReader();
-    rd.onload=()=>{
-      const ls=String(rd.result).replace(/^\uFEFF/,"").split(/\r?\n/).filter(l=>l.trim());
-      if(!ls.length){ts("文件是空的");return;}
-      const P=l=>{const o=[];let c="",q=false;
-        for(let i=0;i<l.length;i++){const ch=l[i];
-          if(q){if(ch==='"'){if(l[i+1]==='"'){c+='"';i++;}else q=false;}else c+=ch;}
-          else{if(ch==='"')q=true;else if(ch===","){o.push(c);c="";}else c+=ch;}}
-        o.push(c);return o;};
-      const hd=P(ls[0]),ix=n=>hd.indexOf(n);
-      let add=0,mrg=0;
-      for(let i=1;i<ls.length;i++){
-        const r=P(ls[i]);
-        const G=(...ns)=>{for(const n of ns){const j=ix(n);if(j>=0&&(r[j]||"").trim())return r[j].trim();}return "";};
-        const co=G("公司名称","公司"),pn=G("联系人昵称","联系人","姓名");
-        if(!co&&!pn)continue;
-        const per={id:nid(),name:pn,title:"",email:G("联系人邮箱","邮箱"),wa:G("WhatsApp","电话"),
-          phone:"",wechat:"",facebook:G("Facebook"),instagram:G("Instagram"),linkedin:G("LinkedIn"),social:"",note:""};
-        const ex=co?cs.find(c=>c.company===co):null;
-        if(ex){if(per.name||per.wa||per.email){ex.people.push(per);mrg++;}continue;}
-        const st=G("客户阶段","阶段");
-        const c=norm({id:nid()+i,company:co,country:G("国家地区","国家"),source:G("客户来源","来源")||"其它",
-          grade:G("客户分类"),stage:st==="询盘客户"?"已报价":st,product:G("询价产品")||"UV板",
-          website:G("公司网址"),tags:G("标签"),notes:G("备注"),createdAt:G("创建日期")||today(),
-          lastTouch:G("最近联系")||today(),nextFollowUp:G("下次跟进"),people:[],links:[],logs:[]});
-        if(per.name||per.wa||per.email)c.people.push(per);
-        const pc=G("联系人");
-        if(pc)pc.split(" ;; ").forEach(s=>{const a=s.split("|");if(!a.join(""))return;
-          c.people.push({id:nid(),name:a[0]||"",title:a[1]||"",wa:a[2]||"",email:a[3]||"",phone:a[4]||"",
-            wechat:a[5]||"",facebook:a[6]||"",instagram:a[7]||"",linkedin:a[8]||"",social:a[9]||"",note:a[10]||""});});
-        const lc=G("链接");
-        if(lc)lc.split(" ;; ").forEach(s=>{const a=s.split("|");if(a[0]&&a[1])c.links.push({label:a[0],url:a[1]});});
-        const gc=G("跟进记录");
-        if(gc)gc.split(" ;; ").forEach(s=>{const a=s.split("|");if(a[2])c.logs.push({t:a[0]||"",stage:a[1]||"",text:a[2]});});
-        const qq=G("报价");
-        if(qq){try{const arr=JSON.parse(qq);if(Array.isArray(arr))c.quotes=arr;}catch(e){}}
-        cs.push(c);add++;
+    ts("正在读取 "+f.name+"…");
+    try{
+      const buf=await f.arrayBuffer();
+      let rows;
+      if(/\.(xlsx|xls)$/i.test(f.name)){
+        const X=await loadXLSX();
+        const wb=X.read(buf,{type:"array",cellDates:true});
+        const sh=wb.Sheets[wb.SheetNames[0]];
+        rows=X.utils.sheet_to_json(sh,{header:1,raw:false,defval:""})
+          .filter(r=>r.some(c=>String(c==null?"":c).trim()));
+      }else{
+        rows=parseCSV(decodeBuf(buf));
       }
-      save();draw();ts(`已导入 ${add} 个客户`+(mrg?`，${mrg} 个联系人并入已有公司`:""));fi.value="";
-    };
-    rd.readAsText(f,"utf-8");
+      const R=rowsToContacts(rows);
+      if(R.msg||(!R.add&&!R.mrg)){
+        alert("没有导入任何客户。\n\n"+(R.msg||"每一行的公司名称和联系人都是空的")
+          +"\n\n读到的表头："+(R.heads.length?R.heads.join(" | "):"（空）")
+          +"\n\n可用的列名：公司名称、国家地区、客户来源、客户分类、客户阶段、询价产品、公司网址、标签、备注、联系人昵称、WhatsApp、联系人邮箱、下次跟进。\n列的顺序无所谓，多余的列会忽略。\n\n点侧栏「下载导入模板」可以拿一个现成的表。");
+      }else{
+        save();draw();
+        ts(`已导入 ${R.add} 个客户`+(R.mrg?`，${R.mrg} 个联系人并入已有公司`:"")+(R.skip?`，跳过 ${R.skip} 行空行`:""));
+      }
+    }catch(e){
+      alert("导入失败："+(e.message||e));
+    }
+    fi.value="";
   };
   fi.click();
 }
+async function dlTmpl(){
+  try{
+    const X=await loadXLSX();
+    const head=["公司名称","国家地区","客户来源","客户分类","客户阶段","询价产品","公司网址","标签","备注","联系人昵称","WhatsApp","联系人邮箱","下次跟进"];
+    const eg=[
+      ["ТОО Декор-Строй","哈萨克斯坦","社媒","B","未读信息","UV板","https://example.kz","批发商;阿拉木图","门店在 Abay 大街，主营装饰板","Aibek","+7 701 000 0000","info@example.kz",""],
+      ["Lagos Decor Ltd","尼日利亚","谷歌","A","已报价","木饰面","","批发商;拉各斯","要 3mm 厚，问过 CIF 价","Chinedu","+234 800 000 0000","","2026-09-20"]
+    ];
+    const ws=X.utils.aoa_to_sheet([head].concat(eg));
+    ws["!cols"]=head.map(h=>({wch:Math.max(12,h.length*2.4)}));
+    const wb=X.utils.book_new();
+    X.utils.book_append_sheet(wb,ws,"客户");
+    X.writeFile(wb,"CRM导入模板.xlsx");
+    ts("模板已下载，填完直接导入");
+  }catch(e){alert("模板生成失败："+(e.message||e));}
+}
+$("#bTmpl").onclick=dlTmpl;
 
 /* ══ 启动 ══ */
 try{const sv=localStorage.getItem("crm-sort");if(sv)sortBy=sv;}catch(e){}
