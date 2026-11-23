@@ -149,15 +149,22 @@ tbody tr[data-go]:hover .nm1{color:var(--acc)}
 .st1{background:#fdeced;color:#c8354f}
 .st2{background:#fff3e0;color:#b45309}
 .st3{background:#e7edff;color:#3b52d0}
-.st4{background:#f0e9ff;color:#7141d8}
-.st5{background:#e3f7ec;color:#0f8a48}
-.st6{background:#dbf4f0;color:#0a7d70}
+.st4{background:#fff4d6;color:#a15c00}
+.st5{background:#f0e9ff;color:#7141d8}
+.st6{background:#e3f7ec;color:#0f8a48}
+.st7{background:#dbf4f0;color:#0a7d70}
 [data-theme=dark] .st1{background:#3a1a20;color:#ff8095}
 [data-theme=dark] .st2{background:#3a2a12;color:#fbbf24}
 [data-theme=dark] .st3{background:#1e2450;color:#94a5ff}
-[data-theme=dark] .st4{background:#2c1f4a;color:#c4a3ff}
-[data-theme=dark] .st5{background:#12331f;color:#4ade80}
-[data-theme=dark] .st6{background:#0f3330;color:#43ded0}
+[data-theme=dark] .st4{background:#3a2c0c;color:#fcd34d}
+[data-theme=dark] .st5{background:#2c1f4a;color:#c4a3ff}
+[data-theme=dark] .st6{background:#12331f;color:#4ade80}
+[data-theme=dark] .st7{background:#0f3330;color:#43ded0}
+.pi{display:inline-block;font-size:11px;padding:0 6px;border-radius:4px;line-height:18px;background:#fff4d6;color:#a15c00;font-weight:500}
+.pi.late{background:#fdeced;color:#c8354f}
+[data-theme=dark] .pi{background:#3a2c0c;color:#fcd34d}
+[data-theme=dark] .pi.late{background:#3a1a20;color:#ff8095}
+.cfh{font-size:11.5px;color:var(--tx-4);margin-top:12px;line-height:1.6}
 
 .wa{display:inline-flex;align-items:center;gap:4px;background:#e3f7ec;color:#0f8a48;font-size:11px;padding:1px 7px;border-radius:5px;font-weight:500;line-height:18px}
 .wa:hover{background:#d0f0e0;text-decoration:none}
@@ -402,7 +409,7 @@ tr:hover .ops{opacity:1}
     <div class="nm">客户开发<span>UV板 · 木饰面 · 格栅</span></div>
   </div>
   <div class="q-mini">
-    <div class="r1"><span class="n num" id="qN">0</span><span class="d num">/ 25</span><span class="lb" id="qL">今日触达</span></div>
+    <div class="r1"><span class="n num" id="qN">0</span><span class="d num" id="qD">/ 15</span><span class="lb" id="qL">今日触达</span></div>
     <div class="q-bar" id="qB"></div>
   </div>
   <nav class="sb-nav" id="nav">
@@ -428,6 +435,9 @@ tr:hover .ops{opacity:1}
     <button class="nv" id="bTmpl">
       <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2.4" width="10" height="11.2" rx="1.2"/><path d="M5.6 6h4.8M5.6 8.6h4.8M5.6 11.2h2.8"/></svg>
       下载导入模板</button>
+    <button class="nv" id="bCfg">
+      <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4.5h7M12.5 4.5h1M2.5 11.5h1M6.5 11.5h7"/><circle cx="11" cy="4.5" r="1.6"/><circle cx="5" cy="11.5" r="1.6"/></svg>
+      跟进设置</button>
   </nav>
   <div class="sb-bt">
     <div class="sy" id="sy"><span class="d"></span><span id="syT">已同步</span><span class="em" id="syE"></span></div>
@@ -458,7 +468,7 @@ tr:hover .ops{opacity:1}
   <div class="mt">
     <div class="m"><div class="k">客户总数</div><div class="v num" id="kT">0</div><div class="d" id="kTd">今日新增 0</div></div>
     <div class="m"><div class="k">回复率</div><div class="v num" id="kR">0%</div><div class="d" id="kRd">0 个客户已回复</div></div>
-    <div class="m"><div class="k">推进中</div><div class="v num" id="kM">0</div><div class="d">深入沟通 + 样单</div></div>
+    <div class="m"><div class="k">推进中</div><div class="v num" id="kM">0</div><div class="d">深入沟通 + 待付款 + 样单</div></div>
     <div class="m"><div class="k">近 7 天触达</div><div class="v num" id="kW">0</div><div class="spark" id="spark"></div></div>
   </div>
   <div class="cd">
@@ -467,7 +477,7 @@ tr:hover .ops{opacity:1}
     <div id="dueL"></div>
   </div>
   <div class="cd">
-    <div class="cd-h"><h2>今日录入</h2><span class="hint">目标 25 个新触达</span>
+    <div class="cd-h"><h2>今日录入</h2><span class="hint" id="todayH">目标 15 个新触达</span>
       <div class="rt"><button class="b sm" data-new="1">＋ 新建客户</button></div></div>
     <div class="tw"><table><thead><tr>
       <th style="width:36%">公司</th><th>国家</th><th>联系人</th><th>来源</th><th>阶段</th>
@@ -478,7 +488,7 @@ tr:hover .ops{opacity:1}
 <!-- 客户列表 -->
 <section class="vw" id="v-list">
   <div class="hd"><h1>客户</h1><span class="sub" id="listSub"></span>
-    <div class="rt"><button class="b p" data-new="1">＋ 新建客户</button></div></div>
+    <div class="rt"><button class="b" id="bFill">一键补日期</button><button class="b p" data-new="1">＋ 新建客户</button></div></div>
   <div class="cd">
     <div class="fl">
       <span class="seg" id="segStage"></span>
@@ -487,9 +497,9 @@ tr:hover .ops{opacity:1}
       <select class="sel" id="fS"><option>全部来源</option></select>
       <select class="sel" id="fP"><option>全部产品</option></select>
       <select class="sel" id="fO">
+        <option value="due">下次跟进</option>
         <option value="touch">最近跟进</option>
         <option value="new">最近录入</option>
-        <option value="due">下次跟进</option>
         <option value="stage">阶段靠后</option>
         <option value="name">公司名</option>
       </select>
@@ -531,7 +541,7 @@ tr:hover .ops{opacity:1}
           <textarea id="lgT" placeholder="今天聊了什么、对方要什么价、下一步做什么…"></textarea>
           <div class="rw">
             <button class="b p sm" id="lgAdd">添加记录</button>
-            <label>下次 <input type="date" id="lgD"></label>
+            <label>下次 <input type="date" id="lgD"><span id="lgDh" style="color:var(--tx-4)"></span></label>
             <label>阶段 <select id="lgS"></select></label>
           </div>
         </div>
@@ -553,7 +563,7 @@ tr:hover .ops{opacity:1}
   <div class="mt">
     <div class="m"><div class="k">近 7 天触达</div><div class="v num" id="wN">0</div><div class="d" id="wNd">日均 0</div></div>
     <div class="m"><div class="k">近 7 天回复</div><div class="v num" id="wR">0</div><div class="d" id="wRd">回复率 0%</div></div>
-    <div class="m"><div class="k">满柜天数</div><div class="v num" id="wF">0</div><div class="d">录满 25 个的天数</div></div>
+    <div class="m"><div class="k">满柜天数</div><div class="v num" id="wF">0</div><div class="d">达到每日目标的天数</div></div>
     <div class="m"><div class="k">在跟进</div><div class="v num" id="wA">0</div><div class="d">设了下次跟进日期</div></div>
   </div>
   <div class="cd"><div class="cd-h"><h2>转化漏斗</h2><span class="hint">全部客户按阶段分布</span></div>
@@ -587,9 +597,9 @@ tr:hover .ops{opacity:1}
       <div class="gr">
         <div class="fd"><label>公司名称 <i>*</i></label><input id="cCo" placeholder="ТОО Декор-Строй"></div>
         <div class="fd"><label>国家地区</label><div class="cb" id="cbCountry"></div></div>
-        <div class="fd"><label>客户来源</label><div class="cb" id="cbSource"></div></div>
+        <div class="fd"><label>客户来源 <i>*</i></label><select id="cSrc"><option value="">请选择</option><option>询盘</option><option>展会</option><option>自己开发</option></select></div>
         <div class="fd"><label>询价产品</label><div class="cb" id="cbProduct"></div></div>
-        <div class="fd"><label>客户分类</label><select id="cGd"><option value="">未分级</option><option>A+</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+        <div class="fd"><label>客户分类</label><select id="cGd"><option>A+</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
         <div class="fd"><label>客户阶段</label><select id="cSt"></select></div>
         <div class="fd w"><label>标签</label><input id="cTg" placeholder="批发商;阿拉木图;有门店（分号隔开）"></div>
       </div></div>
@@ -675,6 +685,24 @@ tr:hover .ops{opacity:1}
   <div class="md-f"><button class="b" data-close="1">取消</button><button class="b p" id="lSv">保存</button></div>
 </div>
 
+<!-- 设置弹窗 -->
+<div class="md nw" id="mCfg">
+  <div class="md-h"><h3>跟进设置</h3><button class="x" data-close="1">✕</button></div>
+  <div class="md-b">
+    <div class="gr t">
+      <div class="fd"><label>每日开发目标（个）</label><input id="cfQ" type="number" min="1"></div>
+      <div class="fd"><label>待付款：每几天跟一次</label><input id="cfPi" type="number" min="1"></div>
+      <div class="fd"><label>A+ 类：每几天</label><input id="cfAp" type="number" min="1"></div>
+      <div class="fd"><label>A 类：每几天</label><input id="cfA" type="number" min="1"></div>
+      <div class="fd"><label>B 类：每几天</label><input id="cfB" type="number" min="1"></div>
+      <div class="fd"><label>D 类：每几天</label><input id="cfD" type="number" min="1"></div>
+      <div class="fd w"><label>C 类跟进序列（录入后第几天，逗号隔开）</label><input id="cfC" placeholder="7,14,30"></div>
+    </div>
+    <div class="cfh">C 类按序列跟完最后一次还没升级，自动降为 D。进入「待付款」自动升为 A。写跟进记录时，下次日期按这里自动算，手动改的优先。</div>
+  </div>
+  <div class="md-f"><button class="b" data-close="1">取消</button><button class="b p" id="cfSv">保存</button></div>
+</div>
+
 <input type="file" id="fi" accept=".csv,.xlsx,.xls,.txt" style="display:none">
 <div class="ts" id="ts"></div>
 
@@ -693,9 +721,9 @@ tr:hover .ops{opacity:1}
 
 <script>
 "use strict";
-const STAGES=["未读信息","已读不回","已报价","深入沟通","样单客户","成交客户","复购客户"];
+const STAGES=["未读信息","已读不回","已报价","深入沟通","待付款","样单客户","成交客户","复购客户"];
 const GRADES=["A+","A","B","C","D"];
-const SOURCES=["社媒","谷歌","展会","询盘","其它"];
+const SOURCES=["询盘","展会","自己开发"];
 const PRODUCTS=["UV板","木饰面","格栅","其它"];
 const CONTINENTS={
  "亚洲":["中国","日本","韩国","蒙古","哈萨克斯坦","乌兹别克斯坦","吉尔吉斯斯坦","塔吉克斯坦","土库曼斯坦","阿富汗","巴基斯坦","印度","孟加拉国","斯里兰卡","尼泊尔","不丹","马尔代夫","缅甸","泰国","老挝","柬埔寨","越南","马来西亚","新加坡","印度尼西亚","菲律宾","文莱","东帝汶","伊朗","伊拉克","叙利亚","黎巴嫩","约旦","以色列","巴勒斯坦","沙特阿拉伯","阿联酋","卡塔尔","科威特","巴林","阿曼","也门","土耳其","格鲁吉亚","亚美尼亚","阿塞拜疆"],
@@ -706,17 +734,20 @@ const CONTINENTS={
  "大洋洲":["澳大利亚","新西兰","巴布亚新几内亚","斐济","所罗门群岛","瓦努阿图","萨摩亚","汤加"]
 };
 const ALL_COUNTRIES=Object.keys(CONTINENTS).reduce((a,k)=>a.concat(CONTINENTS[k]),[]);
-const QUOTA=25, KEY="crm-v6", OLD=["crm-v5","wallsticker-crm-v4","wallsticker-crm-v3","wallsticker-crm-v2"];
+const KEY="crm-v6", OLD=["crm-v5","wallsticker-crm-v4","wallsticker-crm-v3","wallsticker-crm-v2"];
 const AV=["#4a5cf5","#0f8a48","#b45309","#7141d8","#c8354f","#0a7d70","#2563a8","#a8437e"];
 
 let cs=[],curId=null,editC=null,editP=null,page=1,size=25;
 const flt={country:"",stage:"",grade:"",source:"",product:"",q:""};
-let sortBy="touch";
+let sortBy="due";
 
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>(s==null?"":String(s)).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const today=()=>new Date().toISOString().slice(0,10);
-const dAgo=n=>{const d=new Date();d.setDate(d.getDate()-n);return d.toISOString().slice(0,10);};
+const fmt=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const today=()=>fmt(new Date());
+const dAgo=n=>{const d=new Date();d.setDate(d.getDate()-n);return fmt(d);};
+const addD=(s,n)=>{const a=s.split("-").map(Number);const d=new Date(a[0],a[1]-1,a[2]);d.setDate(d.getDate()+n);return fmt(d);};
+const nowT=()=>{const d=new Date();return fmt(d)+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");};
 const wa=p=>{const d=(p||"").replace(/\D/g,"");return d?"https://wa.me/"+d:null;};
 const si=s=>Math.max(0,STAGES.indexOf(s));
 const rep=c=>c.stage!=="未读信息"&&c.stage!=="已读不回";
@@ -744,8 +775,10 @@ function norm(c){
   if(!Array.isArray(c.logs))c.logs=[];
   if(c.stage==="询盘客户")c.stage="已报价";
   c.logs.forEach(l=>{if(l.stage==="询盘客户")l.stage="已报价";});
-  ["company","country","source","grade","product","website","tags","notes","createdAt","lastTouch","nextFollowUp"]
+  ["company","country","source","grade","product","website","tags","notes","createdAt","lastTouch","nextFollowUp","piAt"]
     .forEach(k=>{if(c[k]==null)c[k]="";});
+  if(["社媒","谷歌","其它","其他"].includes(c.source))c.source="自己开发";
+  if(c.cStep==null)c.cStep=0;
   if(!STAGES.includes(c.stage))c.stage="未读信息";
   if(!c.createdAt)c.createdAt=today();
   return c;
@@ -758,6 +791,51 @@ const uk=k=>k+"-"+(sess?sess.user_id:"anon");
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},
   set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},
   del(k){try{localStorage.removeItem(k);}catch(e){}}};
+/* ── 跟进节奏 ── */
+const CFG_DEF={quota:15,"A+":2,A:3,B:7,C:[7,14,30],D:30,pi:2};
+let cfg=Object.assign({},CFG_DEF,LS.get("crm-cfg",{}));
+const gOf=c=>c.grade||"C";
+function plan(c,stage){
+  const t=today();stage=stage||c.stage;
+  let g=gOf(c),step=c.cStep||0,next;
+  if(stage==="待付款"){if(g!=="A+")g="A";next=addD(t,cfg.pi);}
+  else if(g==="C"){
+    step++;const q=cfg.C;
+    if(step>=q.length){g="D";step=0;next=addD(t,cfg.D);}
+    else{next=addD(c.createdAt||t,q[step]);if(next<=t)next=addD(t,(q[step]-q[step-1])||7);}
+  }else next=addD(t,cfg[g]||7);
+  return{grade:g,next,step};
+}
+function firstNext(c){const t=today();if(c.stage==="待付款")return addD(t,cfg.pi);
+  const g=gOf(c);return g==="C"?addD(t,cfg.C[0]):addD(t,cfg[g]||7);}
+function applyFollow(c,stage){const p=plan(c,stage);c.grade=p.grade;c.cStep=p.step;return p.next;}
+function setStage(c,s){
+  if(!s||c.stage===s)return false;
+  c.stage=s;c.lastTouch=today();
+  if(s==="待付款"){c.piAt=today();if(c.grade!=="A+")c.grade="A";c.nextFollowUp=addD(today(),cfg.pi);}
+  return true;
+}
+const piDays=c=>c.stage==="待付款"&&c.piAt?Math.round((new Date(today())-new Date(c.piAt))/864e5):null;
+const piTag=c=>{const n=piDays(c);return n==null?"":`<span class="pi${n>7?" late":""}">PI 已发 ${n} 天</span>`;};
+
+/* ── 查重 ── */
+const FREE=["gmail.com","hotmail.com","outlook.com","yahoo.com","icloud.com","live.com","163.com","qq.com","yandex.ru","mail.ru","aol.com","msn.com","proton.me","protonmail.com"];
+const nCo=x=>(x||"").toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5а-яё]/gi,"");
+const dom=u=>{u=(u||"").trim().toLowerCase();return u?u.replace(/^https?:\/\//,"").replace(/^www\./,"").split(/[\/?#]/)[0]:"";};
+const eDom=e=>{const m=(e||"").toLowerCase().match(/@([\w.-]+)/);return m&&!FREE.includes(m[1])?m[1]:"";};
+const waK=w=>{const d=(w||"").replace(/\D/g,"");return d.length>=8?d.slice(-9):"";};
+function findDup(f,ex){
+  const co=nCo(f.company),ws=dom(f.website),ed=eDom(f.email),wk=waK(f.wa);
+  for(const c of cs){
+    if(c.id===ex)continue;const why=[];
+    if(co.length>=3&&nCo(c.company)===co)why.push("公司名");
+    if(ws&&dom(c.website)===ws)why.push("网址");
+    if(ed&&c.people.some(p=>eDom(p.email)===ed))why.push("邮箱域名");
+    if(wk&&c.people.some(p=>waK(p.wa)===wk))why.push("WhatsApp");
+    if(why.length)return{c,why};
+  }
+  return null;
+}
 function hs(o){const t=JSON.stringify(o);let h=5381;for(let i=0;i<t.length;i++)h=((h*33)^t.charCodeAt(i))>>>0;return t.length+":"+h;}
 
 function load(){
@@ -940,9 +1018,9 @@ function draw(v){
   v=v||(location.hash.replace(/^#\/?/,"").split("/")[0]||"home");
   if(v==="c")v="detail";
   const t=today(),td=cs.filter(c=>c.createdAt===t);
-  $("#qN").textContent=td.length;
-  $("#qL").textContent=td.length>=QUOTA?"满柜 ✓":"今日触达";
-  let b="";for(let i=0;i<QUOTA;i++)b+=`<i class="${i<td.length?(td.length>=QUOTA?"d":"f"):""}"></i>`;
+  $("#qN").textContent=td.length;$("#qD").textContent="/ "+cfg.quota;$("#todayH").textContent=`目标 ${cfg.quota} 个新触达`;
+  $("#qL").textContent=td.length>=cfg.quota?"满柜 ✓":"今日触达";
+  let b="";for(let i=0;i<cfg.quota;i++)b+=`<i class="${i<td.length?(td.length>=cfg.quota?"d":"f"):""}"></i>`;
   $("#qB").innerHTML=b;
   $("#navN").textContent=cs.length;
   if(v==="home")dHome(td);else if(v==="list")dList();
@@ -953,13 +1031,13 @@ function dHome(td){
   const h=new Date().getHours();
   $("#greet").textContent=h<11?"早上好":h<14?"中午好":h<19?"下午好":"晚上好";
   const t=today();
-  const due=cs.filter(c=>c.nextFollowUp&&c.nextFollowUp<=t&&c.stage!=="已读不回");
-  $("#greetSub").textContent=due.length?`有 ${due.length} 个客户等着跟进`:(td.length>=QUOTA?"今天已经满柜了":`今天还差 ${QUOTA-td.length} 个触达`);
+  const due=cs.filter(c=>c.nextFollowUp&&c.nextFollowUp<=t);
+  $("#greetSub").textContent=due.length?`有 ${due.length} 个客户等着跟进`:(td.length>=cfg.quota?"今天已经满柜了":`今天还差 ${cfg.quota-td.length} 个触达`);
   const total=cs.length,r=cs.filter(rep).length;
   $("#kT").textContent=total;$("#kTd").textContent="今日新增 "+td.length;
   $("#kR").textContent=(total?Math.round(r/total*100):0)+"%";
   $("#kRd").textContent=r+" 个客户已回复";
-  $("#kM").textContent=cs.filter(c=>c.stage==="深入沟通"||c.stage==="样单客户").length;
+  $("#kM").textContent=cs.filter(c=>c.stage==="深入沟通"||c.stage==="待付款"||c.stage==="样单客户").length;
   const days=[...Array(7)].map((_,i)=>dAgo(6-i));
   const counts=days.map(d=>cs.filter(c=>c.createdAt===d).length);
   $("#kW").textContent=counts.reduce((a,b)=>a+b,0);
@@ -973,11 +1051,11 @@ function dHome(td){
     return `<div class="dr" data-goc="${c.id}">
       ${avatar(c.company||p0(c).name)}
       <span style="font-weight:520">${esc(c.company||p0(c).name)}</span>
-      ${stg(c.stage)}
+      ${stg(c.stage)}${gdc(c.grade||"C")}${piTag(c)}
       <span class="num ${c.nextFollowUp<t?"od":"sn"}">${c.nextFollowUp}${c.nextFollowUp<t?" 逾期":""}</span>
       <span class="dim">${esc(c.country||"")}</span>
       <span class="rt">${w?`<a class="wa" target="_blank" rel="noopener" href="${w}" data-stop="1">WhatsApp</a>`:""}
-      <button class="lk m" data-clear="${c.id}">已处理</button></span></div>`;
+      <button class="lk" data-done="${c.id}">已跟进</button></span></div>`;
   }).join(""):`<div class="ey"><div class="bg">今天没有到期的跟进</div><div class="sm">写跟进记录时顺手设个日期，到期会出现在这里。</div></div>`;
 
   $("#todayR").innerHTML=td.length?td.map(c=>`<tr data-go="${c.id}">
@@ -987,7 +1065,7 @@ function dHome(td){
     <td>${esc(p0(c).name)||'<span class="dim">—</span>'}${c.people.length>1?`<span class="pl">+${c.people.length-1}</span>`:""}</td>
     <td>${esc(c.source)||'<span class="dim">—</span>'}</td>
     <td>${stg(c.stage)}</td></tr>`).join("")
-    :`<tr><td colspan="5"><div class="ey"><div class="bg">今天还没有录入客户</div><div class="sm">按 ⌘K 或点右上角新建，把 25 格装满。</div></div></td></tr>`;
+    :`<tr><td colspan="5"><div class="ey"><div class="bg">今天还没有录入客户</div><div class="sm">按 ⌘K 或点右上角新建，把 ${cfg.quota} 格装满。</div></div></td></tr>`;
 }
 
 function sortList(a){
@@ -1058,7 +1136,7 @@ function dDetail(){
     <div class="r1">${avatar(c.company||p.name,1)}
       <div style="min-width:0">
         <h2>${esc(c.company||p.name||"未命名客户")}</h2>
-        <div class="mt2">${gdc(c.grade)}<span>${esc(c.country||"未填国家")}</span><span>·</span>
+        <div class="mt2">${gdc(c.grade)}${piTag(c)}<span>${esc(c.country||"未填国家")}</span><span>·</span>
           <span>${esc(c.product||"未填产品")}</span><span>·</span><span>来自${esc(c.source||"未填")}</span><span>·</span>
           ${c.quotes.length?`<span>·</span><span>最近报价 <span class="num">${esc(c.quotes.slice().sort((a,b)=>(b.date||"").localeCompare(a.date||""))[0].date||"")}</span></span>`:""}
           <span>录入 <span class="num">${esc(c.createdAt)}</span></span>
@@ -1125,7 +1203,7 @@ function dDetail(){
   }).join(""):`<span style="color:var(--tx-4);font-size:12px">还没有链接。官网在客户信息里，这里放 Telegram、网店、TikTok、地图定位。</span>`;
 
   $("#lgH").textContent=c.logs.length?c.logs.length+" 条":"";
-  $("#lgD").value=c.nextFollowUp||"";
+  lgDirty=false;$("#lgD").value=plan(c).next;$("#lgDh").textContent="按"+gOf(c)+"类自动";
   $("#lgS").innerHTML='<option value="">不变</option>'+STAGES.map(s=>`<option>${esc(s)}</option>`).join("");
   $("#dLogs").innerHTML=c.logs.length?c.logs.map((l,i)=>`<div class="tli">
     <div class="t1"><span class="num">${esc(l.t)}</span>${l.stage?stg(l.stage):""}<button class="dl" data-dlg="${i}">删除</button></div>
@@ -1141,7 +1219,7 @@ function dBoard(){
       ${it.length?it.map(c=>`<div class="kc" draggable="true" data-id="${c.id}">
         <div class="c1">${esc(c.company||p0(c).name||"—")}</div>
         <div class="c2">${esc(c.country||"")}${p0(c).name?" · "+esc(p0(c).name):""}</div>
-        <div class="c3">${c.grade?gdc(c.grade):""}<span class="c2 num">${esc(c.nextFollowUp||c.createdAt)}</span></div>
+        <div class="c3">${c.grade?gdc(c.grade):""}<span class="c2 num">${esc(c.nextFollowUp||c.createdAt)}</span>${piTag(c)}</div>
       </div>`).join(""):'<div class="ke">拖客户到这里</div>'}</div>`;
   }).join("");
 }
@@ -1151,10 +1229,10 @@ function dStats(){
   $("#wN").textContent=rc.length;$("#wNd").textContent="日均 "+(rc.length/7).toFixed(1);
   $("#wR").textContent=rr;$("#wRd").textContent="回复率 "+(rc.length?Math.round(rr/rc.length*100):0)+"%";
   const bd={};rc.forEach(c=>bd[c.createdAt]=(bd[c.createdAt]||0)+1);
-  $("#wF").textContent=Object.values(bd).filter(n=>n>=QUOTA).length;
+  $("#wF").textContent=Object.values(bd).filter(n=>n>=cfg.quota).length;
   $("#wA").textContent=cs.filter(c=>c.nextFollowUp).length;
   const mx=Math.max(1,...STAGES.map(s=>cs.filter(c=>c.stage===s).length));
-  const CO=["var(--tx-4)","#e0607a","#e0a03c","#5b70e8","#8b5fe0","#20a866","#17968a"];
+  const CO=["var(--tx-4)","#e0607a","#e0a03c","#5b70e8","#d4a017","#8b5fe0","#20a866","#17968a"];
   $("#fn").innerHTML=STAGES.map((s,i)=>{
     const n=cs.filter(c=>c.stage===s).length,p=cs.length?Math.round(n/cs.length*100):0;
     return `<div class="fr"><span class="l">${esc(s)}</span>
@@ -1179,8 +1257,8 @@ function mCust(id){
   $("#cSt").innerHTML=STAGES.map(s=>`<option>${esc(s)}</option>`).join("");
   const S=(el,v)=>{$(el).value=v||"";};
   S("#cCo",c&&c.company);S("#cTg",c&&c.tags);S("#cWs",c&&c.website);S("#cNt",c&&c.notes);
-  $("#cGd").value=(c&&c.grade)||"";$("#cSt").value=(c&&c.stage)||"未读信息";
-  cbC.set(c?c.country:"");cbS.set(c?c.source:"社媒");cbP.set(c?c.product:"UV板");
+  $("#cGd").value=(c&&c.grade)||"C";$("#cSt").value=(c&&c.stage)||"未读信息";
+  cbC.set(c?c.country:"");$("#cSrc").value=c&&SOURCES.includes(c.source)?c.source:"";cbP.set(c?c.product:"UV板");
   const L=k=>{const l=c&&c.links.find(x=>x.label===k);return l?l.url:"";};
   S("#cFb",L("Facebook"));S("#cIg",L("Instagram"));S("#cLi",L("LinkedIn"));S("#cMp",L("地图定位"));S("#cOt",L("其他链接"));
   $("#fpSec").style.display=c?"none":"";
@@ -1193,20 +1271,29 @@ function setL(c,k,u){u=(u||"").trim();const i=c.links.findIndex(x=>x.label===k);
 function saveC(){
   const V=i=>$("#"+i).value.trim();
   if(!V("cCo")&&!V("cPn")){ts("公司名称和联系人至少填一个");return;}
+  if(!$("#cSrc").value){ts("选一下客户来源");$("#cSrc").focus();return;}
+  const dup=findDup({company:V("cCo"),website:V("cWs"),email:editC?"":V("cPe"),wa:editC?"":V("cPw")},editC);
+  if(dup&&!confirm(`可能是重复客户：「${dup.c.company||p0(dup.c).name}」\n${dup.c.country||"未填国家"} · ${dup.c.stage} · 最近联系 ${dup.c.lastTouch||"—"}\n相同：${dup.why.join("、")}\n\n仍然保存？`))return;
   let c,isNew=!editC;
   if(editC){c=find(editC);if(!c)return;}
   else{c=norm({id:nid(),createdAt:today(),lastTouch:today()});cs.unshift(c);}
-  c.company=V("cCo");c.country=cbC.get();c.source=cbS.get()||"其它";
-  c.product=cbP.get()||"UV板";c.grade=$("#cGd").value;c.stage=$("#cSt").value;
+  const og=c.grade;
+  c.company=V("cCo");c.country=cbC.get();c.source=$("#cSrc").value;
+  c.product=cbP.get()||"UV板";c.grade=$("#cGd").value||"C";
   c.tags=V("cTg");c.website=V("cWs");c.notes=V("cNt");c.lastTouch=today();
   setL(c,"Facebook",V("cFb"));setL(c,"Instagram",V("cIg"));setL(c,"LinkedIn",V("cLi"));
   setL(c,"地图定位",V("cMp"));setL(c,"其他链接",V("cOt"));
   if(isNew&&(V("cPn")||V("cPw")||V("cPe")))
     c.people.push({id:nid(),name:V("cPn"),title:V("cPt"),email:V("cPe"),wa:V("cPw"),phone:"",
       wechat:V("cPc"),facebook:"",instagram:"",linkedin:"",social:V("cPs"),note:""});
+  const ns=$("#cSt").value;
+  if(isNew){c.stage=ns;c.cStep=0;
+    if(ns==="待付款"){c.piAt=today();if(c.grade!=="A+")c.grade="A";}
+    c.nextFollowUp=firstNext(c);}
+  else{setStage(c,ns);if(og!==c.grade&&c.stage!=="待付款"){c.cStep=0;c.nextFollowUp=firstNext(c);}}
   save();closeAll();
   if(isNew){const n=cs.filter(x=>x.createdAt===today()).length;draw();
-    ts(n>=QUOTA?`已录入，今天满柜 ${n}/25`:`已录入，今天第 ${n} 个`);}
+    ts(n>=cfg.quota?`已录入，今天满柜 ${n}/${cfg.quota}`:`已录入，今天第 ${n} 个，${c.nextFollowUp} 跟进`);}
   else{dDetail();ts("已保存");}
 }
 function mPer(i){
@@ -1303,9 +1390,9 @@ async function saveQ(){
   if(editQ){Object.assign(c.quotes.find(x=>x.id===editQ),o);}
   else{
     c.quotes.unshift(Object.assign({id:nid()},o));
-    if(si(c.stage)<2){c.stage="已报价";moved=true;}
+    if(si(c.stage)<2){setStage(c,"已报价");moved=true;}
     const sm=items.length?items.map(i=>`${i.spec||""} ${i.price?$("#qCur").value+i.price:""}`.trim()).join("；"):(file?file.name:"");
-    c.logs.unshift({t:new Date().toISOString().slice(0,16).replace("T"," "),
+    c.logs.unshift({t:nowT(),
       text:"报价："+(sm||"见附件"),stage:moved?"已报价":""});
   }
   c.lastTouch=today();
@@ -1391,15 +1478,17 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-close]"))return closeAll();
   if(e.target.closest("[data-stop]"))return;
   if(e.target.closest("[data-new]"))return mCust(null);
-  const cl=e.target.closest("[data-clear]");
-  if(cl){e.stopPropagation();const c=find(cl.dataset.clear);if(c){c.nextFollowUp="";save();draw();ts("已从待跟进移除");}return;}
+  const dn=e.target.closest("[data-done]");
+  if(dn){e.stopPropagation();const c=find(dn.dataset.done);
+    if(c){const nx=applyFollow(c);c.logs.unshift({t:nowT(),text:"已跟进",stage:""});
+      c.lastTouch=today();c.nextFollowUp=nx;save();draw();ts(`已跟进，下次 ${nx}（${gOf(c)}类）`);}return;}
   const gc=e.target.closest("[data-goc]");if(gc)return go("c/"+gc.dataset.goc);
   const rt=e.target.closest("[data-route]");if(rt&&!rt.classList.contains("nv"))return go(rt.dataset.route);
   const tr=e.target.closest("tr[data-go]");if(tr)return go("c/"+tr.dataset.go);
   const fs=e.target.closest("[data-fstage]");
   if(fs){flt.stage=fs.dataset.fstage;page=1;return dList();}
   const st=e.target.closest("[data-stage]");
-  if(st&&curId){const c=find(curId);if(c.stage!==st.dataset.stage){c.stage=st.dataset.stage;c.lastTouch=today();
+  if(st&&curId){const c=find(curId);if(setStage(c,st.dataset.stage)){
     save();dDetail();ts("阶段改为「"+c.stage+"」");}return;}
   const ep=e.target.closest("[data-edp]");if(ep)return mPer(+ep.dataset.edp);
   const dp=e.target.closest("[data-dlp]");
@@ -1426,18 +1515,25 @@ document.addEventListener("click",e=>{
   }
 });
 
+let lgDirty=false;
+$("#lgD").addEventListener("input",()=>{lgDirty=true;$("#lgDh").textContent="手动";});
+$("#lgS").addEventListener("change",()=>{const c=find(curId);if(!c||lgDirty)return;
+  $("#lgD").value=plan(c,$("#lgS").value||undefined).next;});
 $("#lgAdd").onclick=()=>{
   const c=find(curId);if(!c)return;
   const tx=$("#lgT").value.trim();if(!tx){ts("先写点内容");return;}
-  const s=$("#lgS").value,d=$("#lgD").value;
-  c.logs.unshift({t:new Date().toISOString().slice(0,16).replace("T"," "),text:tx,stage:s||""});
-  c.lastTouch=today();if(d)c.nextFollowUp=d;if(s)c.stage=s;
+  const s=$("#lgS").value;
+  c.logs.unshift({t:nowT(),text:tx,stage:s||""});
+  setStage(c,s);
+  const auto=applyFollow(c);
+  const d=lgDirty&&$("#lgD").value?$("#lgD").value:auto;
+  c.lastTouch=today();c.nextFollowUp=d;
   $("#lgT").value="";save();dDetail();
-  ts(s?`记录已添加，阶段改为「${s}」`:(d?`记录已添加，下次跟进 ${d}`:"记录已添加"));
+  ts(`记录已添加${s?`，阶段改为「${s}」`:""}，下次跟进 ${d}`);
 };
 ["fC","fG","fS","fP"].forEach(id=>$("#"+id).onchange=e=>{
   flt[{fC:"country",fG:"grade",fS:"source",fP:"product"}[id]]=e.target.value;page=1;dList();});
-$("#fO").onchange=e=>{sortBy=e.target.value;page=1;try{localStorage.setItem("crm-sort",sortBy);}catch(err){}dList();};
+$("#fO").onchange=e=>{sortBy=e.target.value;page=1;try{localStorage.setItem("crm-sort2",sortBy);}catch(err){}dList();};
 $("#bReset").onclick=()=>{Object.keys(flt).forEach(k=>flt[k]="");page=1;dList();};
 $("#pgP").onclick=()=>{if(page>1){page--;dList();}};
 $("#pgX").onclick=()=>{page++;dList();};
@@ -1452,7 +1548,7 @@ bdE.addEventListener("dragend",e=>{const k=e.target.closest(".kc");if(k)k.classL
 bdE.addEventListener("dragover",e=>{const c=e.target.closest(".cl");if(!c)return;
   e.preventDefault();e.dataTransfer.dropEffect="move";$$(".cl").forEach(x=>x.classList.toggle("ov",x===c));});
 bdE.addEventListener("drop",e=>{const col=e.target.closest(".cl");if(!col||!dragId)return;e.preventDefault();
-  const c=find(dragId);if(c&&c.stage!==col.dataset.stage){c.stage=col.dataset.stage;c.lastTouch=today();save();ts("已移到「"+c.stage+"」");}
+  const c=find(dragId);if(c&&setStage(c,col.dataset.stage)){save();ts("已移到「"+c.stage+"」");}
   dragId=null;dBoard();});
 bdE.addEventListener("dblclick",e=>{const k=e.target.closest(".kc");if(k)go("c/"+k.dataset.id);});
 
@@ -1583,7 +1679,7 @@ function rowsToContacts(rows){
     if(ex){if(per.name||per.wa||per.email){ex.people.push(per);mrg++;}else skip++;continue;}
     let st=V(r,"stage");if(st==="询盘客户")st="已报价";
     const c=norm({id:nid()+"x"+i,company:co,country:V(r,"country"),
-      source:V(r,"source")||"其它",grade:V(r,"grade"),
+      source:V(r,"source")||"自己开发",grade:V(r,"grade"),
       stage:STAGES.indexOf(st)>=0?st:"未读信息",product:V(r,"product")||"UV板",
       website:V(r,"website"),tags:V(r,"tags"),notes:V(r,"note"),
       createdAt:V(r,"created")||today(),lastTouch:V(r,"touch")||today(),
@@ -1641,8 +1737,8 @@ async function dlTmpl(){
     const X=await loadXLSX();
     const head=["公司名称","国家地区","客户来源","客户分类","客户阶段","询价产品","公司网址","标签","备注","联系人昵称","WhatsApp","联系人邮箱","下次跟进"];
     const eg=[
-      ["ТОО Декор-Строй","哈萨克斯坦","社媒","B","未读信息","UV板","https://example.kz","批发商;阿拉木图","门店在 Abay 大街，主营装饰板","Aibek","+7 701 000 0000","info@example.kz",""],
-      ["Lagos Decor Ltd","尼日利亚","谷歌","A","已报价","木饰面","","批发商;拉各斯","要 3mm 厚，问过 CIF 价","Chinedu","+234 800 000 0000","","2026-09-20"]
+      ["ТОО Декор-Строй","哈萨克斯坦","自己开发","B","未读信息","UV板","https://example.kz","批发商;阿拉木图","门店在 Abay 大街，主营装饰板","Aibek","+7 701 000 0000","info@example.kz",""],
+      ["Lagos Decor Ltd","尼日利亚","询盘","A","已报价","木饰面","","批发商;拉各斯","要 3mm 厚，问过 CIF 价","Chinedu","+234 800 000 0000","","2026-09-20"]
     ];
     const ws=X.utils.aoa_to_sheet([head].concat(eg));
     ws["!cols"]=head.map(h=>({wch:Math.max(12,h.length*2.4)}));
@@ -1654,12 +1750,42 @@ async function dlTmpl(){
 }
 $("#bTmpl").onclick=dlTmpl;
 
+/* ══ 设置 ══ */
+$("#bCfg").onclick=()=>{
+  $("#cfQ").value=cfg.quota;$("#cfPi").value=cfg.pi;$("#cfAp").value=cfg["A+"];
+  $("#cfA").value=cfg.A;$("#cfB").value=cfg.B;$("#cfD").value=cfg.D;$("#cfC").value=cfg.C.join(",");
+  openM("#mCfg");
+};
+$("#cfSv").onclick=()=>{
+  const n=id=>Math.max(1,parseInt($("#"+id).value,10)||1);
+  const seq=$("#cfC").value.split(/[,，\s]+/).map(Number).filter(x=>x>0).sort((a,b)=>a-b);
+  if(!seq.length){ts("C 类序列至少填一个天数");return;}
+  cfg={quota:n("cfQ"),"A+":n("cfAp"),A:n("cfA"),B:n("cfB"),C:seq,D:n("cfD"),pi:n("cfPi")};
+  LS.set("crm-cfg",cfg);closeAll();draw();ts("设置已保存");
+};
+
+/* ══ 一键补日期 ══ */
+$("#bFill").onclick=()=>{
+  const t=today(),todo=cs.filter(c=>!c.nextFollowUp);
+  if(!todo.length){ts("所有客户都已有下次跟进日期");return;}
+  if(!confirm(`给 ${todo.length} 个没有日期的客户按分级排上下次跟进？\nA/B 类按上次联系时间算，C 类从明天起分散排开，每天最多 5 个。`))return;
+  let ci=0;
+  todo.slice().sort((a,b)=>(a.createdAt||"").localeCompare(b.createdAt||"")).forEach(c=>{
+    if(!c.grade)c.grade="C";
+    const g=c.grade;
+    if(c.stage==="待付款"){if(!c.piAt)c.piAt=t;c.nextFollowUp=addD(t,cfg.pi);}
+    else if(g==="C"){c.cStep=0;c.nextFollowUp=addD(t,1+Math.floor(ci/5));ci++;}
+    else if(g==="D")c.nextFollowUp=addD(t,cfg.D);
+    else{let d=addD(c.lastTouch||t,cfg[g]||7);if(d<t)d=t;c.nextFollowUp=d;}
+  });
+  save();draw();ts(`已给 ${todo.length} 个客户排好跟进日期`);
+};
+
 /* ══ 启动 ══ */
-try{const sv=localStorage.getItem("crm-sort");if(sv)sortBy=sv;}catch(e){}
+try{const sv=localStorage.getItem("crm-sort2");if(sv)sortBy=sv;}catch(e){}
 try{if(localStorage.getItem("crm-theme")==="dark"){
   document.documentElement.setAttribute("data-theme","dark");$("#themeLb").textContent="浅色模式";}}catch(e){}
 cbC=Combo("#cbCountry",{groups:CONTINENTS,ph:"搜索或直接输入国家"});
-cbS=Combo("#cbSource",{options:SOURCES,ph:"选择或输入来源"});
 cbP=Combo("#cbProduct",{options:PRODUCTS,ph:"选择或输入产品"});
 /* ── 登录界面 ── */
 let auMode="in";
